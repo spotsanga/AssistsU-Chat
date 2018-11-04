@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <title>Student Section</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="/jquery.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+        crossorigin="anonymous">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">AssistsU Chat</a>
+    </nav>
+    <? if(data.code==1){ ?>
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <i>
+            <?= data.message ?></i>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <? }else{ ?>
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <i>
+            <?= data.message ?></i>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <? } ?>
+    <div class="d-flex justify-content-center">
+        <div class="card text-center" style="width: 18rem;margin-top: 50px">
+            <div class="card-header">
+                Student Section
+            </div>
+            <form style="padding: 10px;" action="/student/verifyOTP" method="post">
+                <input type="hidden" name="_csrf" value="<?-csrfToken?>">
+                <input type="hidden" name="id" value="<?=data.id?>">
+                <div class="form-group">
+                    <label for="otp">OTP</label>
+                    <input name="otp" type="number" class="form-control" id="otp">
+                </div>
+                <button type="submit" class="btn btn-primary">Verify</button>
+            </form>
+            <div class="card-footer">
+                <a href="/student/">Already have an account</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
