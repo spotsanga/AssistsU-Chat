@@ -1,14 +1,15 @@
 <html>
 
 <head>
-    <title>Student Section</title>
+    <title>AssistsU Chat</title>
+    <link rel="icon" href="/images/icon.png">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="/jquery.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.css">
     <script src="/js/bootstrap.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
-        crossorigin="anonymous">
+    crossorigin="anonymous">
     <script src="/socket.io.js"></script>
 </head>
 <script src="/crypto-js.js"></script>
@@ -32,7 +33,7 @@
         }
     }
     const P = parseInt('<?- data.P ?>'),
-        G = parseInt('<?- data.G ?>'), min = parseInt('<?- data.min ?>'), max = parseInt('<?- data.max ?>')
+    G = parseInt('<?- data.G ?>'), min = parseInt('<?- data.min ?>'), max = parseInt('<?- data.max ?>')
     const a = Math.floor((Math.random() * max) + min)
     console.log({ G: G, a: a, P: P })
     const x = compute(G, a, P)
@@ -40,7 +41,7 @@
     console.log({ x: x, y: y })
     $.ajax({
         type: 'post',
-        url: '/student/mykey',
+        url: '/user/mykey',
         data: { x: x },
         headers: {
             'CSRF-Token': '<?-csrfToken?>'
@@ -57,17 +58,17 @@
     }
 </script>
 <style>
-    #messages{
-        height: 100%;
-        overflow-y: scroll;
-    }
-    #messages::-webkit-scrollbar {
-        width: 8px;
-    }
-    #messages::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
-    }
+#messages{
+    height: 100%;
+    overflow-y: scroll;
+}
+#messages::-webkit-scrollbar {
+    width: 8px;
+}
+#messages::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
 </style>
 
 <body>
@@ -82,7 +83,7 @@
                     <?=data.name?>
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/student/signout">Signout</a>
+                    <a class="dropdown-item" href="/user/signout">Signout</a>
                 </div>
             </div>
         </div>
@@ -91,7 +92,7 @@
         <script>
             getMessages = () => {
                 $.ajax({
-                    url: '/student/messages',
+                    url: '/user/messages',
                     type: 'post',
                     headers: {
                         'CSRF-Token': '<?-csrfToken?>'
@@ -109,7 +110,7 @@
     <form id="send" onsubmit="send(this);return false;" style="margin:0%;padding: 10px;" class="fixed-bottom">
         <div class="input-group">
             <input id="message" type="text" class="form-control" placeholder="Type your message here..." required
-                autofocus autocomplete="off">
+            autofocus autocomplete="off">
             <div class="input-group-append">
                 <button class="btn btn-outline-info" type="submit">
                     <i class="fab fa-telegram-plane"></i>
@@ -129,22 +130,22 @@
     height = windowHeight - navHeight - sendHeight
     $("#messages").css("height", `${height}`)
     $(".alert").css('margin-top', `-=${height}`)
-    myno = '<?- data.roll_no ?>'
+    myno = '<?- data.email ?>'
     html = `
     <div class="d-flex justify-content-div_align">
-        <div class="card bg-light text-text-align" style="margin:5px;padding:10px;width:max-content;">
-            <code>from</code>
-            <code class='text-dark'>message</code>
-            <small class="text-muted">created_at</small>
-        </div>
+    <div class="card bg-light text-text-align" style="margin:5px;padding:10px;width:max-content;">
+    <code>from</code>
+    <code class='text-dark'>message</code>
+    <small class="text-muted">created_at</small>
+    </div>
     </div>`
     addMessage = (data) => {
         console.log(data)
         var content = html.replace('message', decrypt(data.message, key))
-            .replace('div_align', (data.roll_no == myno) ? 'end' : 'left')
-            .replace('text-align', (data.roll_no == myno) ? 'right' : 'left')
-            .replace('created_at', new Date(data.time).toLocaleTimeString('en-us'))
-            .replace('from', (data.roll_no != myno) ? `${data.name} (${data.roll_no})` : 'You')
+        .replace('div_align', (data.email == myno) ? 'end' : 'left')
+        .replace('text-align', (data.email == myno) ? 'right' : 'left')
+        .replace('created_at', new Date(data.time).toLocaleTimeString('en-us'))
+        .replace('from', (data.email != myno) ? `${data.name} (${data.email})` : 'You')
         $("#messages").append(content)
     }, clear = () => { $("#messages").html('') }
     new_message_count = 0
@@ -155,7 +156,7 @@
         message = encrypt(message, key)
         $.ajax({
             type: 'POST',
-            url: '/student/message',
+            url: '/user/message',
             data: { message: message },
             headers: {
                 'CSRF-Token': '<?-csrfToken?>'
@@ -175,7 +176,7 @@
     socket.on('connect', () => {
         $.ajax({
             type: 'POST',
-            url: '/student/authorizeme',
+            url: '/user/authorizeme',
             data: { 'socketID': socket.id },
             headers: {
                 'CSRF-Token': '<?-csrfToken?>'
@@ -188,7 +189,7 @@
         $(".alert").removeClass('alert-warning').addClass('alert-success').show()
     })
     socket.on('disconnect', (err) => {
-        location.replace('/student')
+        location.replace('/user')
         $("#alert-message").html(err)
         $(".alert").removeClass('alert-success').addClass('alert-warning').show()
     })

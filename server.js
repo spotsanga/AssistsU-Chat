@@ -32,16 +32,16 @@ app.use(express.static('./node_modules/bootstrap/dist'))
 app.use(express.static('./node_modules/crypto-js'))
 
 // sendmail = require('./nodemailer').sendmail
-
-app.get('/', function (req, res) {
-    res.render('home')
+app.get('/',(req,res)=>{
+	res.redirect('/user')
 })
-app.use('/student', require('./routers/student'))
+app.use('/user', require('./routers/user'))
+
 app.all('*', (req, res) => {
     res.render('pagenotfound')
 })
 
-port = 4000, host = '0.0.0.0'
+port = 80, host = '0.0.0.0'
 http.listen(port, host, function (err) {
     console.log(`App runs on http://${host}:${port}`)
 })

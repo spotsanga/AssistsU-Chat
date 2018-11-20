@@ -20,7 +20,7 @@ var encrypt = (message, key) => {
 var decrypt = (ciphertext, key) => {
     return CryptoJS.AES.decrypt(ciphertext, key).toString(CryptoJS.enc.Utf8)
 }
-const G = 100099999999989, P = 9007199254740991, min = 1, max = 5
+const G = 9, P = 23, min = 1, max = 10
 b = Math.floor((Math.random() * max) + min),
     y = compute(G, b, P)
 // console.log({ G: G, b: b, P: P, y: y })
